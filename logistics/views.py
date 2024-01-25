@@ -1,6 +1,10 @@
+from django.http import HttpResponse
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import Paquete, ItemPlanilla
+
+def hello(request):
+    return HttpResponse("<h1>Para ingresar al endpoint con un nro de tracking dado, correr la url api/paquetes/1</h1>")
 
 @api_view(['GET'])
 def paquete_detail(request, tracking):
