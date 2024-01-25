@@ -29,7 +29,7 @@ class Paquete(models.Model):
     tipo_paquete = models.CharField(max_length=20, choices=TIPO_PAQUETE_CHOICES)
 
     def __str__(self):
-        return self.tracking + ' - ' + "Destinatario " + self.nombre_destinatario
+        return "Tracking nro " + self.tracking
 
 
 class Planilla(models.Model):
@@ -46,5 +46,5 @@ class ItemPlanilla(models.Model):
     motivo_fallo = models.CharField(max_length=255, blank=True, null=True)
     
     def __str__(self):
-        return "Planilla nro " + self.planilla.numero_planilla + " - Nombre Destinatario " + self.paquete.nombre_destinatario 
+        return "Planilla nro " + self.planilla.numero_planilla + " - Nro de tracking de paquete " + self.paquete.tracking 
 
