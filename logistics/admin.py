@@ -1,21 +1,21 @@
 from django.contrib import admin
 from .models import Paquete, Planilla, ItemPlanilla, Cliente
 from django.contrib import messages
-
+from django.db import transaction
 
 @admin.action(description="Pasar a distribucion")
 def pasar_a_distribucion(modeladmin, request, queryset):
-    # Obtengo el nro de planilla
-    for planilla in queryset:
-        item = ItemPlanilla.objects.filter(planilla_id=planilla.id)
-        for item in queryset:
-            paquetes = Paquete.objects.filter(id=item.id)
-            print(paquetes)
-            for paquete in paquetes:
-                paquete.estado = 'distribucion'
-                paquete.save()
+    try:
+        with transaction.atomic():
+            for planilla in queryset:
+                items = ItemPlanilla.objects.filter(planilla_id=planilla.id).select_related('paquete')
+                for item in items:
+                    Paquete.objects.filter(id=item.paquete_id).update(estado='distribucion')
 
-    messages.success(request, "La accion se ha actualizado correctamente.")
+            messages.success(request, "La accion se ha actualizado correctamente.")
+    except Exception as e:
+        messages.error(request, f"Error al realizar la accion: {str(e)}")
+
 
 
 class ClienteAdmin(admin.ModelAdmin):
